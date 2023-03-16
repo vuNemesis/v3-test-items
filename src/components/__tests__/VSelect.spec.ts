@@ -1,39 +1,52 @@
 import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount, VueWrapper } from '@vue/test-utils'
+import type { ComponentPublicInstance } from 'vue'
 
+import type Item from '../../types/Item'
 import VSelect from '../VSelect.vue'
 
+type VSelectProps = any
+type VSelectMethods = {
+  select: (item: Item) => void
+}
+
+type VSelectWrapperType = VueWrapper<ComponentPublicInstance<VSelectProps, VSelectMethods>>
+
+interface ItemProps {
+  item: Item
+  selected: boolean
+  disabled: boolean
+}
+
 describe('VSelect', () => {
-  const items = [
+  const items: Item[] = [
     { id: 1, name: 'Item 1' },
     { id: 2, name: 'Item 2' },
     { id: 3, name: 'Item 3' }
   ]
 
-  const item = { id: 1, name: 'Item 1' }
-
   it('renders the items with the correct props', () => {
-    const itemsParams = []
+    const itemsProps: ItemProps[] = []
 
-    const wrapper = mount(VSelect, {
+    shallowMount(VSelect, {
       props: { items },
       slots: {
-        item: (params) => itemsParams.push(params)
+        item: (params) => itemsProps.push(params)
       }
     })
 
-    expect(itemsParams).toHaveLength(items.length)
+    expect(itemsProps).toHaveLength(items.length)
 
-    itemsParams.forEach((itemParams, index) => {
+    itemsProps.forEach((itemProps, index) => {
       const item = items[index]
-      expect(itemParams.item).toEqual(item)
-      expect(itemParams.selected).toBe(false)
-      expect(itemParams.disabled).toBe(false)
+      expect(itemProps.item).toEqual(item)
+      expect(itemProps.selected).toBe(false)
+      expect(itemProps.disabled).toBe(false)
     })
   })
 
   it('selects one item when not in multiple mode', async () => {
-    const wrapper = mount(VSelect, {
+    const wrapper = shallowMount(VSelect, {
       props: {
         items
       }
@@ -44,8 +57,9 @@ describe('VSelect', () => {
   })
 
   it('selects two items in multiple mode', async () => {
-    const modelValue = []
-    const wrapper = mount(VSelect, {
+    const modelValue: Item[] = []
+
+    const wrapper: VSelectWrapperType = mount(VSelect, {
       props: {
         multiple: true,
         modelValue,
@@ -59,34 +73,34 @@ describe('VSelect', () => {
   })
 
   it('renders the items as selected if they are in the modelValue', async () => {
-    const itemsParams = []
-    const modelValue = items.slice(0, 2)
+    const itemsProps: ItemProps[] = []
+    const modelValue: Item[] = items.slice(0, 2)
 
-    mount(VSelect, {
+    shallowMount(VSelect, {
       props: {
         multiple: true,
         items,
         modelValue
       },
       slots: {
-        item: (params) => itemsParams.push(params)
+        item: (params) => itemsProps.push(params)
       }
     })
 
-    expect(itemsParams).toHaveLength(items.length)
+    expect(itemsProps).toHaveLength(items.length)
 
-    itemsParams.forEach((itemParams, index) => {
+    itemsProps.forEach((itemProps, index) => {
       const item = items[index]
-      expect(itemParams.selected).toBe(modelValue.includes(item))
-      expect(itemParams.disabled).toBe(false)
+      expect(itemProps.selected).toBe(modelValue.includes(item))
+      expect(itemProps.disabled).toBe(false)
     })
   })
 
   it('renders the items as disabled if they are not in the modelValue and maximum number of selections is exceeded', async () => {
-    const itemsParams = []
-    const modelValue = items.slice(0, 3)
+    const itemsProps: ItemProps[] = []
+    const modelValue: Item[] = items.slice(0, 3)
 
-    mount(VSelect, {
+    shallowMount(VSelect, {
       props: {
         max: 3,
         multiple: true,
@@ -94,16 +108,16 @@ describe('VSelect', () => {
         modelValue
       },
       slots: {
-        item: (params) => itemsParams.push(params)
+        item: (params) => itemsProps.push(params)
       }
     })
 
-    expect(itemsParams).toHaveLength(items.length)
+    expect(itemsProps).toHaveLength(items.length)
 
-    itemsParams.forEach((itemParams, index) => {
+    itemsProps.forEach((itemProps, index) => {
       const item = items[index]
-      expect(itemParams.selected).toBe(modelValue.includes(item))
-      expect(itemParams.disabled).toBe(!modelValue.includes(item))
+      expect(itemProps.selected).toBe(modelValue.includes(item))
+      expect(itemProps.disabled).toBe(!modelValue.includes(item))
     })
   })
 })
