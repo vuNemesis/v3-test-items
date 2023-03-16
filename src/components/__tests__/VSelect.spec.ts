@@ -46,7 +46,7 @@ describe('VSelect', () => {
   })
 
   it('selects one item when not in multiple mode', async () => {
-    const wrapper = shallowMount(VSelect, {
+    const wrapper: VSelectWrapperType = shallowMount(VSelect, {
       props: {
         items
       }
