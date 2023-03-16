@@ -12,7 +12,7 @@ export default defineConfig({
     AutoImport({
       imports: ['vue'],
       dts: 'src/auto-imports.d.ts',
-      dirs: ['src/composables'],
+      dirs: ['src/composables/**'],
       eslintrc: {
         enabled: true
       },
@@ -21,6 +21,7 @@ export default defineConfig({
     Components({
       extensions: ['vue'],
       include: [/\.vue$/, /\.vue\?vue/],
+      dirs: ['src/components', 'src/pages'],
       dts: 'src/components.d.ts'
     })
   ],
