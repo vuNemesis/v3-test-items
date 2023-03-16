@@ -80,6 +80,13 @@ const unselectMultiple = (item: Id) =>
   )
 
 const onClick = (item: Id): void => (selectedSet.has(item.id) ? unselect(item) : select(item))
+
+// if (import.meta.env.MODE === 'test') {
+
+// }
+defineExpose({
+  select
+})
 </script>
 
 <template>
